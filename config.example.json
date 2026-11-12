@@ -1,0 +1,195 @@
+{
+  "device": "VKB",
+  "bindings": {
+    "RT": [
+      {
+        "type": "axis",
+        "index": 2,
+        "sign": -1,
+        "min": 0.15,
+        "max": 1.0
+      }
+    ],
+    "LT": [
+      {
+        "type": "axis",
+        "index": 2,
+        "sign": 1,
+        "min": 0.15,
+        "max": 1.0
+      }
+    ],
+    "DU": [
+      {
+        "type": "button",
+        "index": 15
+      }
+    ],
+    "DD": [
+      {
+        "type": "button",
+        "index": 17
+      }
+    ],
+    "DL": [
+      {
+        "type": "button",
+        "index": 18
+      }
+    ],
+    "DR": [
+      {
+        "type": "button",
+        "index": 16
+      }
+    ],
+    "RX+": [
+      {
+        "type": "hat",
+        "index": 0,
+        "dir": "R"
+      }
+    ],
+    "RX-": [
+      {
+        "type": "hat",
+        "index": 0,
+        "dir": "L"
+      }
+    ],
+    "RY+": [
+      {
+        "type": "hat",
+        "index": 0,
+        "dir": "U"
+      }
+    ],
+    "RY-": [
+      {
+        "type": "hat",
+        "index": 0,
+        "dir": "D"
+      }
+    ],
+    "LX+": [
+      {
+        "type": "axis",
+        "index": 0,
+        "sign": 1,
+        "min": 0.02,
+        "max": 1.0
+      }
+    ],
+    "LX-": [
+      {
+        "type": "axis",
+        "index": 0,
+        "sign": -1,
+        "min": 0.02,
+        "max": 1.0
+      }
+    ],
+    "LY+": [
+      {
+        "type": "axis",
+        "index": 1,
+        "sign": -1,
+        "min": 0.02,
+        "max": 1.0
+      }
+    ],
+    "LY-": [
+      {
+        "type": "axis",
+        "index": 1,
+        "sign": 1,
+        "min": 0.02,
+        "max": 1.0
+      }
+    ],
+    "LB+RB": [
+      {
+        "type": "button",
+        "index": 26
+      }
+    ],
+    "LT+RT": [
+      {
+        "type": "button",
+        "index": 19
+      }
+    ],
+    "A": [
+      {
+        "type": "button",
+        "index": 21
+      }
+    ],
+    "B": [
+      {
+        "type": "button",
+        "index": 0
+      }
+    ],
+    "X": [
+      {
+        "type": "button",
+        "index": 10
+      }
+    ],
+    "Y": [
+      {
+        "type": "button",
+        "index": 12
+      }
+    ],
+    "RB": [
+      {
+        "type": "axis",
+        "index": 5,
+        "sign": -1,
+        "min": 0.3,
+        "max": 1.0
+      }
+    ],
+    "LB": [
+      {
+        "type": "axis",
+        "index": 5,
+        "sign": 1,
+        "min": 0.3,
+        "max": 1.0
+      }
+    ],
+    "LS": [
+      {
+        "type": "button",
+        "index": 8
+      }
+    ],
+    "RS": [
+      {
+        "type": "button",
+        "index": 6
+      }
+    ],
+    "START": [
+      {
+        "type": "button",
+        "index": 5
+      }
+    ],
+    "BACK": [
+      {
+        "type": "button",
+        "index": 7
+      }
+    ],
+    "LS+RS": [
+      {
+        "type": "button",
+        "index": 2
+      }
+    ]
+  }
+}

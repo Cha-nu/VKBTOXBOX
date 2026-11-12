@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+
+# 개인 매핑 (GUI가 자동 저장함). 예시는 config.example.json 참고
+config.json
