@@ -166,14 +166,15 @@ class PadView:
                           ("DL", (180, 214, 204, 236)), ("DR", (226, 214, 250, 236))):
             self.items[name] = c.create_rectangle(*box, fill=self.OFF, outline=self.EDGE)
         # 원시 입력 표시
-        c.create_text(20, 372, text="VKB 원시 입력", fill=self.TEXT, font=FONT_S, anchor="w")
+        self.raw_title = c.create_text(20, 372, text="원시 입력", fill=self.TEXT,
+                                       font=FONT_S, anchor="w")
         self.raw_bars = []
-        for i in range(6):
-            x0 = 20 + i * 90
+        for i in range(8):
+            x0 = 20 + i * 67
             c.create_text(x0, 390, text=f"축 {i}", fill="#8a909a", font=FONT_S, anchor="w")
-            c.create_rectangle(x0, 400, x0 + 80, 410, fill=self.OFF, outline="")
-            c.create_line(x0 + 40, 398, x0 + 40, 412, fill="#70777f")
-            self.raw_bars.append((x0, c.create_rectangle(x0 + 40, 400, x0 + 40, 410,
+            c.create_rectangle(x0, 400, x0 + 58, 410, fill=self.OFF, outline="")
+            c.create_line(x0 + 29, 398, x0 + 29, 412, fill="#70777f")
+            self.raw_bars.append((x0, c.create_rectangle(x0 + 29, 400, x0 + 29, 410,
                                                          fill="#4fb3ff", outline="")))
         self.raw_text = c.create_text(20, 426, text="", fill="#8a909a", font=FONT_S,
                                       anchor="w")
@@ -196,15 +197,21 @@ class PadView:
             moved = abs(st[bx]) > 0.01 or abs(st[by]) > 0.01
             c.itemconfig(ring, outline="#4fb3ff" if moved else self.EDGE)
 
-    def show_raw(self, snap):
+    def show_raw(self, dev, snap, count):
+        """dev 장치의 원시 입력을 보여 준다. count = 연결된 장치 수."""
         c = self.c
         for i, (x0, item) in enumerate(self.raw_bars):
             v = snap["axes"][i] if snap and i < len(snap["axes"]) else 0.0
-            mid = x0 + 40
-            c.coords(item, min(mid, mid + 40 * v), 400, max(mid, mid + 40 * v), 410)
+            mid = x0 + 29
+            c.coords(item, min(mid, mid + 29 * v), 400, max(mid, mid + 29 * v), 410)
         if snap is None:
-            c.itemconfig(self.raw_text, text="스틱 연결 안 됨")
+            c.itemconfig(self.raw_title, text="원시 입력")
+            c.itemconfig(self.raw_text, text="조이스틱 연결 안 됨")
         else:
+            title = f"원시 입력 · {dev}"
+            if count > 1:
+                title += f"   (장치 {count}개 중 마지막으로 움직인 것)"
+            c.itemconfig(self.raw_title, text=title)
             btns = " ".join(str(b + 1) for b in sorted(snap["buttons"])) or "-"
             hats = " ".join(core.hat_dir(h) or "·" for h in snap["hats"]) or "-"
             c.itemconfig(self.raw_text, text=f"버튼: {btns}     햇: {hats}")
@@ -220,8 +227,9 @@ class App:
         self.device = core.DEVICE_MATCH
         self.load()
 
-        self.stick = None
-        self.next_open = 0.0
+        self.sticks = None
+        self.raw_dev = None
+        self.raw_prev = {}
         self.capture = None
         self.pad = None
         self.vg = None
@@ -232,7 +240,7 @@ class App:
         self.active_rows = set()
         self.frame = 0
 
-        root.title("vkb2xbox - VKB → Xbox 360 매핑")
+        root.title("vkb2xbox - 조이스틱 → Xbox 360 매핑")
         root.configure(bg="#f3f4f6")
         root.resizable(False, False)
         style = ttk.Style()
@@ -251,9 +259,9 @@ class App:
         self.tree = ttk.Treeview(left, columns=("out", "src"), show="headings",
                                  height=len(ROWS), selectmode="browse")
         self.tree.heading("out", text="Xbox 출력")
-        self.tree.heading("src", text="VKB 입력")
-        self.tree.column("out", width=250, anchor="w")
-        self.tree.column("src", width=250, anchor="w")
+        self.tree.heading("src", text="조이스틱 입력")
+        self.tree.column("out", width=230, anchor="w")
+        self.tree.column("src", width=360, anchor="w")
         self.tree.tag_configure("on", background="#cfe8ff")
         for name, _ in ROWS:
             self.tree.insert("", "end", iid=name, values=(LABEL[name], ""))
@@ -298,11 +306,13 @@ class App:
         self.out_btn.grid(row=0, column=0, sticky="w")
         self.out_label = ttk.Label(bar, text="")
         self.out_label.grid(row=0, column=1, sticky="w", padx=10)
-        self.dev_label = ttk.Label(right, text="", font=FONT_S, foreground="#555555")
+        self.dev_label = ttk.Label(right, text="", font=FONT_S, foreground="#555555",
+                                   wraplength=560, justify="left")
         self.dev_label.grid(row=3, column=0, sticky="w", pady=(8, 0))
         ttk.Label(right, font=FONT_S, foreground="#555555", justify="left", text=(
             "· 표의 항목을 더블클릭(또는 '입력 지정')한 뒤 스틱을 움직이거나 버튼을 누르세요.\n"
             "· 축은 원하는 방향으로 끝까지 움직이면 됩니다. Esc = 취소.\n"
+            "· 스틱·스로틀·페달 등 연결된 모든 장치를 함께 인식합니다.\n"
             "· 변경 내용은 config.json에 자동 저장됩니다."
         )).grid(row=4, column=0, sticky="w", pady=(6, 0))
 
@@ -310,6 +320,8 @@ class App:
         root.protocol("WM_DELETE_WINDOW", self.close)
 
         core.init_pygame()
+        self.sticks = core.Sticks(self.device)
+        self.update_dev_label()
         self.refresh_tree()
         self.on_select()
         self.set_idle_status()
@@ -339,7 +351,18 @@ class App:
         t = core.describe(s)
         if s["type"] == "axis":
             t += f"  데드존 {round(s.get('min', 0) * 100)}%"
+        if s.get("device"):
+            t += f"  [{s['device']}]"
         return t
+
+    def update_dev_label(self):
+        info = self.sticks.info()
+        if info:
+            text = "입력 장치: " + "\n                 ".join(
+                f"{k}  (축 {na}, 버튼 {nb}, 햇 {nh})" for k, na, nb, nh in info)
+        else:
+            text = "입력 장치: 조이스틱을 찾는 중…"
+        self.dev_label.config(text=text)
 
     def refresh_tree(self):
         for name, _ in ROWS:
@@ -407,8 +430,8 @@ class App:
         name = self.selected()
         if not name:
             return
-        if self.stick is None:
-            self.set_status("스틱이 연결되어 있지 않습니다.", "#ffd0d0")
+        if not self.sticks.names():
+            self.set_status("조이스틱이 연결되어 있지 않습니다.", "#ffd0d0")
             return
         self.capture = {"name": name, "add": add, "t0": time.time(), "base": None}
         self.set_status(f"「{LABEL[name].split('   ')[0]}」 에 쓸 입력을 움직이거나 누르세요…"
@@ -427,30 +450,15 @@ class App:
             cap["base"] = snap
             return
         base = cap["base"]
-        found = None
-        new = snap["buttons"] - base["buttons"]
-        if new:
-            found = {"type": "button", "index": min(new)}
-        if found is None:
-            for h, xy in enumerate(snap["hats"]):
-                d = core.hat_dir(xy)
-                if d and xy != base["hats"][h]:
-                    found = {"type": "hat", "index": h, "dir": d}
-                    break
-        if found is None:
-            best, best_d, sign = None, 0.6, 1
-            for a, v in enumerate(snap["axes"]):
-                d = v - base["axes"][a]
-                if abs(d) > best_d:
-                    best, best_d, sign = a, abs(d), (1 if d > 0 else -1)
-            if best is not None:
-                found = {"type": "axis", "index": best, "sign": sign}
+        for dev, s in snap.items():  # 도중에 꽂힌 장치
+            base.setdefault(dev, s)
+        found = core.detect_input(base, snap)
         if found is None:
             return
         self.capture = None
         self.assign(cap["name"], found, cap["add"])
-        self.set_status(f"「{LABEL[cap['name']].split('   ')[0]}」 ← {core.describe(found)}",
-                        "#d6f5d6")
+        self.set_status(f"「{LABEL[cap['name']].split('   ')[0]}」 ← "
+                        f"{core.describe(found, True)}", "#d6f5d6")
 
     def assign(self, name, src, add):
         def put(n, s):
@@ -546,10 +554,9 @@ class App:
 
     def compute(self):
         """현재 스틱 입력에 매핑을 적용한 Xbox 상태와 활성 행 목록."""
-        j = self.stick
         vals = {}
         for name, _ in ROWS:
-            vals[name] = core.out_value(j, self.binds, name)
+            vals[name] = core.out_value(self.sticks, self.binds, name)
         st = {
             "buttons": {n for n in core.BUTTON_OUTPUTS if vals[n] > 0.0},
             "lx": round(vals["LX+"] - vals["LX-"], 3),
@@ -563,33 +570,34 @@ class App:
     def tick(self):
         self.frame += 1
         now = time.time()
-        snap = None
+        snaps = {}
         st, active = EMPTY_STATE, set()
 
-        if self.stick is None and now >= self.next_open:
-            self.next_open = now + 1.0
-            self.stick = core.open_stick(self.device)
-            if self.stick is not None:
-                j = self.stick
-                self.dev_label.config(text=f"입력 장치: {j.get_name()}  (축 {j.get_numaxes()}, "
-                                           f"버튼 {j.get_numbuttons()}, 햇 {j.get_numhats()})")
-            else:
-                self.dev_label.config(text=f"입력 장치: '{self.device}' 스틱을 찾는 중…")
+        try:
+            if self.sticks.pump():
+                self.update_dev_label()
+            snaps = self.sticks.snapshot()
+            st, active = self.compute()
+        except pygame.error:
+            snaps = {}
+            st, active = EMPTY_STATE, set()
 
-        if self.stick is not None:
-            try:
-                snap = core.snapshot(self.stick)
-                if not self.stick.get_init():
-                    raise pygame.error("removed")
-                st, active = self.compute()
-            except pygame.error:
-                self.stick = None
-                snap = None
-                st, active = EMPTY_STATE, set()
+        if self.capture:
+            if snaps:
+                self.poll_capture(snaps)
+            else:
                 self.cancel_capture()
 
-        if self.capture and snap is not None:
-            self.poll_capture(snap)
+        # 원시 입력 표시는 마지막으로 움직인 장치를 따라간다
+        for dev, s in snaps.items():
+            p = self.raw_prev.get(dev)
+            if p is None or s["buttons"] != p["buttons"] or s["hats"] != p["hats"] or \
+                    any(abs(a - b) > 0.05 for a, b in zip(s["axes"], p["axes"])):
+                if p is not None:
+                    self.raw_dev = dev
+                self.raw_prev[dev] = s
+        if self.raw_dev not in snaps:
+            self.raw_dev = next(iter(snaps), None)
 
         shown = st
         if self.pad is not None:
@@ -610,7 +618,7 @@ class App:
 
         if self.frame % 2 == 0:
             self.view.show(shown)
-            self.view.show_raw(snap)
+            self.view.show_raw(self.raw_dev, snaps.get(self.raw_dev), len(snaps))
             if self.pad is None:
                 self.out_label.config(text="꺼짐 · 그림은 매핑 미리보기", foreground="#555555")
             elif self.slot is not None and self.slot > 0:
@@ -647,7 +655,7 @@ def selftest(app, path):
             ImageGrab.grab(bbox=(x, y, x + w, y + h)).save(path)
         except Exception as e:
             print("screenshot failed:", e)
-        print("stick:", app.stick.get_name() if app.stick else None)
+        print("sticks:", app.sticks.names())
         print("pad:", app.pad is not None, "slot:", app.slot, "frames:", app.frame,
               "before:", app.slots_before, "now:", xinput_connected())
         app.close()
