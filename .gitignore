@@ -1,5 +1,8 @@
 __pycache__/
 *.pyc
 
+# VKB 제조사 설정 도구/펌웨어 (재배포하지 않음)
+VKB/
+
 # 개인 매핑 (GUI가 자동 저장함). 예시는 config.example.json 참고
 config.json
