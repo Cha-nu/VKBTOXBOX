@@ -1,9 +1,14 @@
 # vkb2xbox
 
+[![한국어](https://img.shields.io/badge/한국어-읽는_중-2ea44f)](README.md)
+[![English](https://img.shields.io/badge/English-Read-blue)](README.en.md)
+
 VKB 조이스틱(을 비롯한 HOTAS·스로틀·러더 페달) 입력을 **가상 Xbox 360 컨트롤러**로 바꿔 주는 Windows용 매핑 프로그램입니다.
 
 게임패드만 지원하는 게임(에이스 컴뱃 시리즈 등)을 플라이트 스틱으로 하고 싶을 때 씁니다.
 스틱의 축·버튼·햇을 Xbox 패드의 스틱·트리거·버튼에 자유롭게 연결하고, 게임은 평범한 Xbox 360 패드가 꽂힌 것으로 인식합니다.
+
+![vkb2xbox 실행 화면](docs/screenshot.png)
 
 ## 기능
 
