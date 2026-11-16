@@ -330,9 +330,13 @@ class App:
     # ------------------------------------------------------------- 설정 파일
 
     def load(self):
-        if os.path.exists(self.config_path):
+        # 설정 파일이 아직 없으면 내장된 기본 매핑으로 시작한다
+        path = self.config_path
+        if not os.path.exists(path):
+            path = core.BUILTIN_CONFIG
+        if os.path.exists(path):
             try:
-                with open(self.config_path, encoding="utf-8") as f:
+                with open(path, encoding="utf-8") as f:
                     cfg = json.load(f)
                 self.binds = cfg.get("bindings", {})
                 self.device = cfg.get("device", core.DEVICE_MATCH)
@@ -504,8 +508,20 @@ class App:
                 err = e
                 time.sleep(0.7)
         if self.pad is None:
-            messagebox.showerror("vkb2xbox", "가상 Xbox 컨트롤러를 만들 수 없습니다.\n"
-                                 f"ViGEmBus 드라이버를 확인하세요.\n\n{err}")
+            msi = os.path.join(os.path.dirname(vg.__file__), "win", "vigem", "install",
+                               "x64", "ViGEmBusSetup_x64.msi")
+            if os.path.exists(msi):
+                # 드라이버 설치 프로그램이 함께 들어 있으면 바로 실행할 수 있게 한다
+                if messagebox.askyesno(
+                        "vkb2xbox", "가상 Xbox 컨트롤러를 만들 수 없습니다.\n"
+                        "ViGEmBus 드라이버가 설치되어 있지 않은 것 같습니다.\n\n"
+                        "지금 드라이버 설치 프로그램을 실행할까요?\n"
+                        "(설치가 끝나면 '가상 Xbox 패드 켜기'를 다시 누르세요)\n\n"
+                        f"{err}"):
+                    os.startfile(msi)
+            else:
+                messagebox.showerror("vkb2xbox", "가상 Xbox 컨트롤러를 만들 수 없습니다.\n"
+                                     f"ViGEmBus 드라이버를 확인하세요.\n\n{err}")
             return
         core.prime_pad(self.pad)
         B = vg.XUSB_BUTTON

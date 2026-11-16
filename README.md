@@ -15,7 +15,43 @@ VKB 조이스틱(을 비롯한 HOTAS·스로틀·러더 페달) 입력을 **가�
 - GUI: 스틱을 움직여서 매핑 지정, 가상 패드의 실제 출력을 그림으로 실시간 확인
 - CLI: 매핑 마법사(`setup`), 변환 실행(`run`), 원시 입력 확인(`monitor`)
 
-## 설치
+## 바로 실행 (exe)
+
+Python 없이 쓰려면 [Releases](https://github.com/Cha-nu/VKBTOXBOX/releases)에서 `vkb2xbox.exe`를 받아 실행하면 됩니다.
+
+- 처음 실행하면 제가 쓰는 매핑(VKB Gladiator EVO R 기준)이 기본으로 들어 있습니다. 바꾼 내용은 exe 옆의 `config.json`에 저장됩니다.
+- 가상 패드를 만들려면 **ViGEmBus 드라이버**가 필요합니다. 아래 [설치 방법](#vigembus-드라이버-설치)을 참고하세요.
+- 직접 빌드하려면 `pip install pyinstaller` 후 `build.bat`을 실행합니다.
+
+## ViGEmBus 드라이버 설치
+
+가상 Xbox 360 컨트롤러를 만드는 드라이버입니다. 한 번만 설치하면 되고, 아래 중 편한 방법 하나를 쓰면 됩니다.
+
+**방법 1 — 프로그램에서 설치**
+
+`vkb2xbox.exe`에서 **가상 Xbox 패드 켜기**를 눌렀을 때 드라이버가 없으면 설치 프로그램을 실행할지 묻습니다. **예**를 누르고 설치를 끝낸 뒤 버튼을 다시 누르세요.
+
+**방법 2 — winget 명령어**
+
+PowerShell이나 명령 프롬프트에서 실행합니다.
+
+```
+winget install ViGEm.ViGEmBus
+```
+
+**방법 3 — 직접 내려받기**
+
+[ViGEmBus 릴리스 페이지](https://github.com/nefarius/ViGEmBus/releases/latest)에서 `ViGEmBus_x.xx.x_x64_x86_arm64.exe`를 받아 실행합니다.
+
+설치 중 관리자 권한을 묻는 창이 뜨면 허용하세요. 설치 후에도 가상 패드가 만들어지지 않으면 PC를 다시 시작해 보세요.
+
+설치되었는지는 **설정 → 앱 → 설치된 앱**에서 "ViGEm Bus Driver"를 찾거나, 다음 명령으로 확인할 수 있습니다.
+
+```
+winget list ViGEm.ViGEmBus
+```
+
+## 설치 (소스로 실행)
 
 1. [Python 3](https://www.python.org/downloads/) 설치 (설치할 때 "Add python.exe to PATH" 체크)
 2. 패키지 설치

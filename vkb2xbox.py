@@ -23,8 +23,15 @@ os.environ["SDL_JOYSTICK_THREAD"] = "1"
 
 import pygame  # noqa: E402
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+if getattr(sys, "frozen", False):
+    # exe로 묶인 경우: 설정은 exe 옆에 저장하고, 기본 매핑은 exe 안에서 꺼낸다
+    HERE = os.path.dirname(os.path.abspath(sys.executable))
+    BUNDLE = getattr(sys, "_MEIPASS", HERE)
+else:
+    HERE = BUNDLE = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_CONFIG = os.path.join(HERE, "config.json")
+# config.json이 아직 없을 때 GUI가 처음 불러오는 기본 매핑
+BUILTIN_CONFIG = os.path.join(BUNDLE, "config.example.json")
 DEVICE_MATCH = "VKB"
 # 이름에 이 글자가 들어간 장치는 입력으로 쓰지 않는다 (가상 패드 자신을 다시 읽지 않도록)
 VIRTUAL_HINTS = ("xbox", "x-box", "xinput")

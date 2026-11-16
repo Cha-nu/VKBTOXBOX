@@ -107,18 +107,6 @@
         "max": 1.0
       }
     ],
-    "LB+RB": [
-      {
-        "type": "button",
-        "index": 26
-      }
-    ],
-    "LT+RT": [
-      {
-        "type": "button",
-        "index": 19
-      }
-    ],
     "A": [
       {
         "type": "button",
@@ -129,18 +117,6 @@
       {
         "type": "button",
         "index": 0
-      }
-    ],
-    "X": [
-      {
-        "type": "button",
-        "index": 10
-      }
-    ],
-    "Y": [
-      {
-        "type": "button",
-        "index": 12
       }
     ],
     "RB": [
@@ -161,34 +137,66 @@
         "max": 1.0
       }
     ],
+    "LS+RS": [
+      {
+        "type": "button",
+        "index": 2
+      }
+    ],
+    "X": [
+      {
+        "type": "button",
+        "index": 8,
+        "device": "VKBsim Gladiator EVO R"
+      }
+    ],
+    "Y": [
+      {
+        "type": "button",
+        "index": 5,
+        "device": "VKBsim Gladiator EVO R"
+      }
+    ],
+    "LB+RB": [
+      {
+        "type": "button",
+        "index": 4,
+        "device": "VKBsim Gladiator EVO R"
+      }
+    ],
+    "LT+RT": [
+      {
+        "type": "button",
+        "index": 3,
+        "device": "VKBsim Gladiator EVO R"
+      }
+    ],
     "LS": [
       {
         "type": "button",
-        "index": 8
+        "index": 10,
+        "device": "VKBsim Gladiator EVO R"
       }
     ],
     "RS": [
       {
         "type": "button",
-        "index": 6
+        "index": 12,
+        "device": "VKBsim Gladiator EVO R"
       }
     ],
     "START": [
       {
         "type": "button",
-        "index": 5
+        "index": 13,
+        "device": "VKBsim Gladiator EVO R"
       }
     ],
     "BACK": [
       {
         "type": "button",
-        "index": 7
-      }
-    ],
-    "LS+RS": [
-      {
-        "type": "button",
-        "index": 2
+        "index": 11,
+        "device": "VKBsim Gladiator EVO R"
       }
     ]
   }

@@ -6,3 +6,8 @@ VKB/
 
 # 개인 매핑 (GUI가 자동 저장함). 예시는 config.example.json 참고
 config.json
+
+# PyInstaller 빌드 산출물
+build/
+dist/
+*.spec
