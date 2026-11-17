@@ -85,6 +85,8 @@ winget list ViGEm.ViGEmBus
 
 매핑은 `config.json`에 자동 저장됩니다.
 
+창 오른쪽 아래의 **언어 / Language** 메뉴에서 한국어·영어를 바꿀 수 있습니다. 처음에는 Windows 표시 언어를 따르며, 고른 언어는 `config.json`에 함께 저장됩니다.
+
 ### 명령줄
 
 ```

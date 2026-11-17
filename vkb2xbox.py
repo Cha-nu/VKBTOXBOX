@@ -246,13 +246,17 @@ def out_value(sticks, binds, name):
     return max((src_value(sticks, s) for s in srcs), default=0.0)
 
 
-def describe(s, with_device=False):
+_DESC_WORDS = {"ko": ("버튼", "햇", "축"), "en": ("Button", "Hat", "Axis")}
+
+
+def describe(s, with_device=False, lang="ko"):
+    w_btn, w_hat, w_axis = _DESC_WORDS.get(lang, _DESC_WORDS["ko"])
     if s["type"] == "button":
-        t = f"버튼 {s['index'] + 1}"
+        t = f"{w_btn} {s['index'] + 1}"
     elif s["type"] == "hat":
-        t = f"햇 {s['index']} {s['dir']}"
+        t = f"{w_hat} {s['index']} {s['dir']}"
     else:
-        t = f"축 {s['index']} ({'+' if s['sign'] > 0 else '-'})"
+        t = f"{w_axis} {s['index']} ({'+' if s['sign'] > 0 else '-'})"
     if with_device and s.get("device"):
         t += f" [{s['device']}]"
     return t

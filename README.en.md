@@ -87,6 +87,8 @@ Run `gui.bat`.
 
 Mappings are saved to `config.json` automatically.
 
+Use the **Language / 언어** menu at the bottom right of the window to switch between English and Korean. It defaults to your Windows display language, and your choice is saved in `config.json`.
+
 ### Command line
 
 ```
