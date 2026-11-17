@@ -10,6 +10,12 @@ You connect the stick's axes, buttons, and hats to the Xbox pad's sticks, trigge
 
 ![vkb2xbox screenshot](docs/screenshot.png)
 
+### In action
+
+Move the VKB stick and the virtual Xbox pad's sticks, triggers, and buttons follow in real time.
+
+![vkb2xbox demo](docs/demo.gif)
+
 > The program's interface is in Korean only for now.
 
 ## Features
