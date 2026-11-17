@@ -16,8 +16,6 @@ Move the VKB stick and the virtual Xbox pad's sticks, triggers, and buttons foll
 
 ![vkb2xbox demo](docs/demo.gif)
 
-> The program's interface is in Korean only for now.
-
 ## Features
 
 - Free mapping: axis → stick / trigger / button, button or hat → button / stick direction
